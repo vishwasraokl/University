@@ -20,10 +20,17 @@ namespace University.Pages.Student
         }
 
         public IList<University.Models.Student> Student { get;set; }
+        public string CurrentFilter { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string searchString)
         {
-            Student = await _context.Students.ToListAsync();
+            CurrentFilter = searchString;
+            if (!string.IsNullOrEmpty(CurrentFilter)) {
+                Student = await _context.Students.Where(s => (s.LastName.ToUpper().Contains(CurrentFilter.ToUpper()) || s.FirstMidName.ToUpper().Contains(CurrentFilter.ToUpper()))).ToListAsync();
+            }
+            else {
+                Student = await _context.Students.ToListAsync();
+            }
         }
     }
 }
